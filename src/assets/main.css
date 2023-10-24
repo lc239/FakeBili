@@ -1,0 +1,22 @@
+/* @import './base.css'; */
+
+@font-face {
+  font-family: "HarmonyOS_Regular";
+  src: url("./fonts/HarmonyOS_Sans_SC_Regular.ttf") format("truetype");
+}
+@font-face {
+  font-family: "HarmonyOS_Medium";
+  src: url("./fonts/HarmonyOS_Sans_SC_Medium.ttf") format("truetype");
+}
+body{
+    margin: 0;
+    font-family: PingFang SC,HarmonyOS_Regular,Helvetica Neue,Microsoft YaHei,sans-serif !important;
+    font-size: 14px;
+}
+body *{
+  margin: 0;
+  padding: 0;
+  box-sizing: border-box;
+  font-family: inherit;
+  font-size: 100%;
+}
