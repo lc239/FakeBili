@@ -1,7 +1,7 @@
 <script setup>
-    import TopLeftNav from './TopLeftNav.vue'
-    import TopCenterNav from './TopCenterNav.vue'
-    import TopRightNav from './TopRightNav.vue'
+    import TopLeftNav from '@/components/Top/TopLeftNav.vue'
+    import TopCenterNav from '@/components/Top/TopCenterNav.vue'
+    import TopRightNav from '@/components/Top/TopRightNav.vue'
     import { ref } from 'vue';
 
     const change = ref(true)
@@ -19,8 +19,9 @@
     .top-nav{
         height: 64px;
         width: 100%;
+        max-width: 2560px;
         padding: 0 24px;
-        color: #18191C;
+        color: var(--text2);
         position: absolute;
         top: 0;
         z-index: 50;
@@ -53,15 +54,5 @@
         to{
             transform: translateY(-4px);
         }
-    }
-    .fadeout-enter-from,.fadeout-leave-to{
-        opacity: 0;
-        transform: translateY(-10px);
-    }
-    .fadeout-enter-active,.fadeout-leave-active{
-        transition: all .4s;
-    }
-    .fadeout-enter-to,.fadeout-leave-from{
-        opacity: 1;
     }
 </style>

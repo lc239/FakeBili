@@ -20,3 +20,15 @@ body *{
   font-family: inherit;
   font-size: 100%;
 }
+body a{
+  text-decoration: none;
+}
+body button{
+  cursor: pointer;
+  border: none;
+}
+:root{
+  --text1: #61666D;
+  --text2: #18191C;
+  --link1: #00AEEC;
+}

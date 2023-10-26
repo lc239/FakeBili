@@ -1,10 +1,12 @@
 <script setup>
-    import { ref, onMounted } from 'vue';
+    import { ref, onMounted } from 'vue'
+    import { useFade } from '../../js/mouse'
 
     const s13States = ['s13-state0','s13-state1','s13-state2']
     const s13Cls = ref('s13-state0')
-    const inDownloadArea = ref(false)
+    
     const downloadArea = ref(null)
+    const inDownloadArea = useFade(downloadArea)
 
     //s13的动画
     onMounted(() => {
@@ -20,12 +22,6 @@
             }
         }, 4500)
     })
-    //控制下载区域的显示
-    function leaveDownloadArea(e){
-        if(!downloadArea.value.contains(e.relatedTarget)){
-            inDownloadArea.value = false
-        }
-    }
 </script>
 
 <template>
@@ -48,18 +44,18 @@
                 S13
             </div>
             <div class="s13-img">
-                <img src="../assets/images/top-nav/s13.png">
+                <img src="@/assets/images/top-nav/s13.png">
             </div>
             <div class="s13-bottom">
                 S13
             </div>
             </a></li>
-        <li ref="downloadArea" @mouseenter="inDownloadArea = true" @mouseleave="leaveDownloadArea"><a href="">
+        <li ref="downloadArea"><a href="">
             <svg width="16" height="16" viewBox="0 0 16 16" fill="none" xmlns="http://www.w3.org/2000/svg" class="download-client-trigger__icon">
                 <path d="M7.23181 8.65895V1.75796C7.23181 1.33935 7.57582 1 8.00018 1C8.42453 1 8.76854 1.33935 8.76854 1.75796V8.67097L9.98589 7.47009C10.286 7.17409 10.7725 7.17409 11.0725 7.47009C11.3726 7.7661 11.3726 8.24601 11.0725 8.54201L8.54958 11.0308C8.24952 11.3268 7.76302 11.3268 7.46295 11.0308L4.94002 8.54201C4.63995 8.24601 4.63995 7.7661 4.94002 7.47009C5.24008 7.17409 5.72658 7.17409 6.02665 7.47009L7.23181 8.65895Z" fill="currentColor"></path><path d="M3.48023 4.29936C2.40686 4.29936 1.53672 5.15772 1.53672 6.21656V11.5669C1.53672 12.6257 2.40686 13.4841 3.48023 13.4841H12.5198C13.5931 13.4841 14.4633 12.6257 14.4633 11.5669V6.21656C14.4633 5.15772 13.5931 4.29936 12.5198 4.29936H11.6158C11.1915 4.29936 10.8475 3.96001 10.8475 3.5414C10.8475 3.12279 11.1915 2.78344 11.6158 2.78344H12.5198C14.4418 2.78344 16 4.3205 16 6.21656V11.5669C16 13.4629 14.4418 15 12.5198 15H3.48023C1.55815 15 0 13.4629 0 11.5669V6.21656C0 4.3205 1.55815 2.78344 3.48023 2.78344H4.38418C4.80853 2.78344 5.15254 3.12279 5.15254 3.5414C5.15254 3.96001 4.80853 4.29936 4.38418 4.29936H3.48023Z" fill="currentColor"></path>
             </svg>
             下载客户端</a>
-            <Transition name="fadeout">
+            <Transition name="fadedown">
                 <div v-if="inDownloadArea" class="download">
                     <div class="download-content">
                         <div class="mobile-app">
@@ -69,7 +65,7 @@
                                 </svg>手机版
                             </div>
                             <div class="hint">扫码即可下载手机APP</div>
-                            <div class="mobile-QR"><img src="../assets/images/top-nav/mobile-app.png"></div>
+                            <div class="mobile-QR"><img src="@/assets/images/top-nav/mobile-app.png"></div>
                         </div>
                         <div class="line"></div>
                         <div class="windows-app">
@@ -148,7 +144,7 @@
     }
     .left-nav .download-content .hint{
         font-size: 12px;
-        color: #61666D;
+        color: var(--text1);
         line-height: 17px;
         margin: 0 0 12px 0;
     }
@@ -205,7 +201,7 @@
         transition: all .3s;
     }
     .left-nav .download .download-ex:hover{
-        color: #00AEEC;
+        color: var(--link1);
     }
     .left-nav .download .download-ex svg{
         transform: rotate(-90deg);
@@ -215,7 +211,6 @@
         height: 64px;
         line-height: 64px;
         margin-right: 20px;
-        text-decoration: none;
         color: white;
     }
     .left-nav li a.s13 div{

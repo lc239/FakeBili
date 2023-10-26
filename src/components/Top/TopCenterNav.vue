@@ -1,6 +1,6 @@
 <script setup>
     import { ref } from 'vue'
-    import { useHistoryStore } from '../stores/index-history'
+    import { useHistoryStore } from '@/stores/index-history'
     import { storeToRefs } from 'pinia'
 
     const trendsPicPathPrefix = './src/assets/images/top-nav/trends/'
@@ -101,7 +101,7 @@
                 </div>
                 <div class="trends">
                     <div class="trend" v-for="(item) in trends" :key="item.id" @click="search(item.text)">
-                        <div class="rank" :style="{color:item.id < 4 ? '#18191C' : '#9499A0'}">{{ item.id }}</div>
+                        <div class="rank" :style="{color:item.id < 4 ? 'var(--text2)' : '#9499A0'}">{{ item.id }}</div>
                         <div class="text">{{ item.text }}</div>
                         <img v-if="item.src" :src="trendsPicPathPrefix + item.src">
                     </div>
@@ -152,20 +152,20 @@
         height: 20px;
         border: none;
         background-color: transparent;
-        color: #61666D;
+        color: var(--text1);
         font-family: inherit;
         font-size: inherit;
     }
     .search-content input:focus{
        outline: none;
        background-color: #E3E5E7;
-       color: #18191C;
+       color: var(--text2);
     }
     .search-content svg{
         cursor: pointer;
     }
     .search-content svg:hover path{
-        fill: #61666D;
+        fill: var(--text1);
     }
     .search-nav .search-btn{
         width: 32px;
@@ -213,7 +213,6 @@
         display: flex;
         flex-wrap: wrap;
         max-height: 172px;
-        overflow: hidden;
         padding: 0 16px;
         margin: 12px 0 4px 0;
     }
