@@ -1,14 +1,19 @@
 <script setup>
-    import { ref, watch } from 'vue';
+    import { inject, ref, watch } from 'vue'
+    import instance from '../conf/axios-instance';
+    import { useUserStore } from '@/stores/user'
+    import { storeToRefs } from 'pinia'
 
-    defineEmits(['close'])
+    const {token, refreshToken} = storeToRefs(useUserStore())
+    const emit = defineEmits(['close'])
     const props = defineProps({
         login: {
             default: true
         }
     })
-    const login = ref(props.login)
-    const inputtingPrivate = ref(false)
+    const queryBasic = inject('queryBasic')
+    const login = ref(props.login)//打开登录面板还是注册面板
+    const inputtingPrivate = ref(false)//正在输入敏感信息
     const scanTitle = ref('扫描二维码登录')
     const scanImgSrc = ref('qr.png')
     const pwdType = ref('password')
@@ -20,7 +25,8 @@
     const mail = ref('')
     const veriCode = ref('')
     const vCodeDisable = ref(true)
-
+    const loginError = ref('')
+    
     function changePwdVisible(){
         if(pwdType.value === 'password'){
             pwdType.value = 'text'
@@ -29,13 +35,70 @@
             pwdType.value = 'password'
         }
     }
-    function changePanel(){
-        login.value = !login.value
+    function changePanel(toLogin){
+        login.value = toLogin
+        loginError.value = ''//清空提示信息
     }
     //账号密码都写了才能按登录按钮
     watch(() => account.value.length === 0 || password.value.length === 0, result => {
         loginDisable.value = result
     })
+
+    let errorMsgTimer
+    function showLoginMsg(msg){
+        loginError.value = msg
+        if(errorMsgTimer) clearTimeout(errorMsgTimer)
+        errorMsgTimer = setTimeout(() => {
+            loginError.value = ''
+            errorMsgTimer = null
+        }, 1000)
+    }
+    function registerPost(){
+        instance.post('/register', document.querySelector('.register-form'), {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => {
+            if(res.status === 200){
+                token.value = res.data.token
+                refreshToken.value = res.data.refreshToken
+                emit('close')
+                queryBasic()
+            }
+        }).catch(err => {
+            if(err.response){
+                if(err.response.data.code === 1){
+                    showLoginMsg('用户名已存在')
+                }
+            }else{
+                showLoginMsg('请求超时')
+            }
+        })
+    }
+    function loginPost(){
+        instance.post('/login', document.querySelector('.login-form'), {
+            headers: {
+                'Content-Type': 'application/json'
+            }
+        }).then(res => {
+            if(res.status === 200){
+                token.value = res.data.token
+                refreshToken.value = res.data.refreshToken
+                emit('close')
+                queryBasic()
+            }
+        }).catch(err => {
+            if(err.response){
+                if(err.response.status === 409){
+                    if(err.response.data.code === 1){
+                        showLoginMsg('用户名或密码错误')
+                    }
+                }
+            }else{
+                showLoginMsg('请求超时')
+            }
+        })
+    }
 </script>
 
 <template>
@@ -49,7 +112,7 @@
         <div class="scan-login">
             <span class="title">{{ scanTitle }}</span>
             <div class="qr">
-                <img :src="`./src/assets/images/login-panel/${scanImgSrc}`">
+                <img :src="`/images/login-panel/${scanImgSrc}`">
             </div>
             <div class="tip">
                 <div>请使用<a href="">哔哩哔哩客户端</a></div>
@@ -59,18 +122,18 @@
         <div class="line"></div>
         <div class="inp-login">
             <div class="tab-title">
-                <span class="title" :class="{active: login}" @click="changePanel">密码登录</span>
+                <span class="title" :class="{active: login}" @click="changePanel(true)">密码登录</span>
                 <span class="line"></span>
-                <span class="title" :class="{active: !login}" @click="changePanel">邮箱注册</span>
+                <span class="title" :class="{active: !login}" @click="changePanel(false)">邮箱注册</span>
             </div>
-            <form v-if="login" action="" class="login-form">
+            <form v-if="login" method="post" class="login-form">
                 <div class="inp-area">
                     <div class="inp">
-                        <label>账号<input v-model="account" type="text" name="account" placeholder="请输入账号"></label>
+                        <label>账号<input v-model="account" type="text" name="account" placeholder="请输入账号" maxlength="20"></label>
                     </div>
                     <div class="line"></div>
                     <div class="inp">
-                        <label>密码<input v-model="password" :type="pwdType" name="password" placeholder="请输入密码" @focus="inputtingPrivate = true" @blur="inputtingPrivate = false"></label>
+                        <label>密码<input v-model="password" :type="pwdType" name="password" placeholder="请输入密码" maxlength="20" autocomplete="off" @focus="inputtingPrivate = true" @blur="inputtingPrivate = false"></label>
                         <svg v-if="pwdType === 'password'" width="20" height="20" @click="changePwdVisible" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5753 6.85456C17.7122 6.71896 17.8939 6.63806 18.0866 6.63806C18.7321 6.63806 19.0436 7.42626 18.5748 7.87006C18.1144 8.30554 17.457 8.69885 16.6478 9.03168L18.1457 10.5296C18.2101 10.5941 18.2613 10.6706 18.2962 10.7548C18.331 10.839 18.349 10.9293 18.349 11.0204C18.349 11.1116 18.331 11.2019 18.2962 11.2861C18.2613 11.3703 18.2101 11.4468 18.1457 11.5113C18.0812 11.5757 18.0047 11.6269 17.9205 11.6618C17.8363 11.6967 17.746 11.7146 17.6548 11.7146C17.5637 11.7146 17.4734 11.6967 17.3892 11.6618C17.305 11.6269 17.2284 11.5757 17.164 11.5113L15.3409 9.68819C15.2898 9.63708 15.247 9.57838 15.2141 9.51428C14.4874 9.71293 13.6876 9.87122 12.8344 9.98119C12.8363 9.99011 12.8381 9.99908 12.8397 10.0081L13.2874 12.5472C13.315 12.7266 13.2713 12.9098 13.1656 13.0573C13.0598 13.2049 12.9005 13.3052 12.7217 13.3367C12.5429 13.3683 12.3589 13.3285 12.2091 13.2259C12.0592 13.1234 11.9555 12.9663 11.9202 12.7882L11.4725 10.2491C11.4645 10.2039 11.4611 10.1581 11.4621 10.1125C10.9858 10.1428 10.4976 10.1586 10.0002 10.1586C9.57059 10.1586 9.14778 10.1468 8.73362 10.1241C8.73477 10.1656 8.7322 10.2074 8.72578 10.249L8.27808 12.7881C8.24612 12.9694 8.14345 13.1306 7.99265 13.2362C7.84186 13.3418 7.65528 13.3831 7.47398 13.3512C7.29268 13.3192 7.1315 13.2166 7.0259 13.0658C6.9203 12.915 6.87892 12.7284 6.91088 12.5471L7.35858 10.008C7.35877 10.007 7.35896 10.0061 7.35915 10.0052C6.50085 9.90284 5.6941 9.75191 4.95838 9.56025C4.93012 9.60634 4.89634 9.64933 4.85748 9.68819L3.03438 11.5113C2.96992 11.5757 2.8934 11.6269 2.80918 11.6618C2.72496 11.6967 2.63469 11.7146 2.54353 11.7146C2.45237 11.7146 2.36211 11.6967 2.27789 11.6618C2.19367 11.6269 2.11714 11.5757 2.05268 11.5113C1.98822 11.4468 1.93709 11.3703 1.90221 11.2861C1.86732 11.2019 1.84937 11.1116 1.84937 11.0204C1.84937 10.9293 1.86732 10.839 1.90221 10.7548C1.93709 10.6706 1.98822 10.5941 2.05268 10.5296L3.49373 9.08855C2.6197 8.744 1.91247 8.33062 1.42559 7.87006C0.956591 7.42636 1.26799 6.63816 1.91359 6.63816C2.10629 6.63816 2.28789 6.71896 2.42489 6.85456C2.70009 7.12696 3.19529 7.45886 3.98459 7.77796C5.54429 8.40856 7.73699 8.77016 10.0001 8.77016C12.2632 8.77016 14.4558 8.40856 16.0156 7.77796C16.8049 7.45886 17.3001 7.12696 17.5753 6.85456Z" fill="#9499A0"></path>
                         </svg>
@@ -79,20 +142,23 @@
                         </svg>
                         <div class="forget-pwd">忘记密码？</div>
                     </div>
+                    <Transition name="login-msg">
+                        <div class="error-msg" v-if="loginError">{{ loginError }}</div>
+                    </Transition>
                 </div>
                 <div class="btn">
                     <button type="button" class="go-register-btn" @click="changePanel">去注册</button>
-                    <button class="login-btn" :disabled="loginDisable">登录</button>
+                    <button type="button" class="login-btn" :disabled="loginDisable" @click="loginPost">登录</button>
                 </div>
             </form>
-            <form v-else action="" class="register-form">
+            <form v-else method="post" class="register-form">
                 <div class="inp-area">
                     <div class="inp">
-                        <label>账号&#12288;<input v-model="registerAccount" type="text" name="account" placeholder="请输入账号"></label>
+                        <label>账号&#12288;<input v-model="registerAccount" type="text" name="account" placeholder="请输入账号" maxlength="20"></label>
                     </div>
                     <div class="line"></div>
                     <div class="inp">
-                        <label>密码&#12288;<input v-model="registerPassword" :type="pwdType" name="password" placeholder="请输入密码" @focus="inputtingPrivate = true" @blur="inputtingPrivate = false"></label>
+                        <label>密码&#12288;<input v-model="registerPassword" :type="pwdType" name="password" placeholder="请输入密码" maxlength="20" autocomplete="off" @focus="inputtingPrivate = true" @blur="inputtingPrivate = false"></label>
                         <svg v-if="pwdType === 'password'" width="20" height="20" @click="changePwdVisible" viewBox="0 0 20 20" fill="none" xmlns="http://www.w3.org/2000/svg">
                             <path fill-rule="evenodd" clip-rule="evenodd" d="M17.5753 6.85456C17.7122 6.71896 17.8939 6.63806 18.0866 6.63806C18.7321 6.63806 19.0436 7.42626 18.5748 7.87006C18.1144 8.30554 17.457 8.69885 16.6478 9.03168L18.1457 10.5296C18.2101 10.5941 18.2613 10.6706 18.2962 10.7548C18.331 10.839 18.349 10.9293 18.349 11.0204C18.349 11.1116 18.331 11.2019 18.2962 11.2861C18.2613 11.3703 18.2101 11.4468 18.1457 11.5113C18.0812 11.5757 18.0047 11.6269 17.9205 11.6618C17.8363 11.6967 17.746 11.7146 17.6548 11.7146C17.5637 11.7146 17.4734 11.6967 17.3892 11.6618C17.305 11.6269 17.2284 11.5757 17.164 11.5113L15.3409 9.68819C15.2898 9.63708 15.247 9.57838 15.2141 9.51428C14.4874 9.71293 13.6876 9.87122 12.8344 9.98119C12.8363 9.99011 12.8381 9.99908 12.8397 10.0081L13.2874 12.5472C13.315 12.7266 13.2713 12.9098 13.1656 13.0573C13.0598 13.2049 12.9005 13.3052 12.7217 13.3367C12.5429 13.3683 12.3589 13.3285 12.2091 13.2259C12.0592 13.1234 11.9555 12.9663 11.9202 12.7882L11.4725 10.2491C11.4645 10.2039 11.4611 10.1581 11.4621 10.1125C10.9858 10.1428 10.4976 10.1586 10.0002 10.1586C9.57059 10.1586 9.14778 10.1468 8.73362 10.1241C8.73477 10.1656 8.7322 10.2074 8.72578 10.249L8.27808 12.7881C8.24612 12.9694 8.14345 13.1306 7.99265 13.2362C7.84186 13.3418 7.65528 13.3831 7.47398 13.3512C7.29268 13.3192 7.1315 13.2166 7.0259 13.0658C6.9203 12.915 6.87892 12.7284 6.91088 12.5471L7.35858 10.008C7.35877 10.007 7.35896 10.0061 7.35915 10.0052C6.50085 9.90284 5.6941 9.75191 4.95838 9.56025C4.93012 9.60634 4.89634 9.64933 4.85748 9.68819L3.03438 11.5113C2.96992 11.5757 2.8934 11.6269 2.80918 11.6618C2.72496 11.6967 2.63469 11.7146 2.54353 11.7146C2.45237 11.7146 2.36211 11.6967 2.27789 11.6618C2.19367 11.6269 2.11714 11.5757 2.05268 11.5113C1.98822 11.4468 1.93709 11.3703 1.90221 11.2861C1.86732 11.2019 1.84937 11.1116 1.84937 11.0204C1.84937 10.9293 1.86732 10.839 1.90221 10.7548C1.93709 10.6706 1.98822 10.5941 2.05268 10.5296L3.49373 9.08855C2.6197 8.744 1.91247 8.33062 1.42559 7.87006C0.956591 7.42636 1.26799 6.63816 1.91359 6.63816C2.10629 6.63816 2.28789 6.71896 2.42489 6.85456C2.70009 7.12696 3.19529 7.45886 3.98459 7.77796C5.54429 8.40856 7.73699 8.77016 10.0001 8.77016C12.2632 8.77016 14.4558 8.40856 16.0156 7.77796C16.8049 7.45886 17.3001 7.12696 17.5753 6.85456Z" fill="#9499A0"></path>
                         </svg>
@@ -102,17 +168,20 @@
                     </div>
                     <div class="line"></div>
                     <div class="inp">
-                        <label>邮箱&#12288;<input v-model="mail" type="text" name="mail" placeholder="请输入邮箱"></label>
+                        <label>邮箱&#12288;<input v-model="mail" type="text" name="mail" placeholder="请输入邮箱" maxlength="30"></label>
                         <div class="line"></div>
                         <div class="get-vcode" :class="{disabled: vCodeDisable}">获取验证码</div>
                     </div>
                     <div class="line"></div>
                     <div class="inp">
-                        <label>验证码<input v-model="veriCode" maxlength="6" type="text" name="veriCode" placeholder="请输入验证码" @focus="inputtingPrivate = true" @blur="inputtingPrivate = false"></label>
+                        <label>验证码<input v-model="veriCode" maxlength="6" type="text" name="veriCode" placeholder="请输入验证码" autocomplete="off" @focus="inputtingPrivate = true" @blur="inputtingPrivate = false"></label>
                     </div>
+                    <Transition name="login-msg">
+                        <div class="error-msg" v-if="loginError">{{ loginError }}</div>
+                    </Transition>
                 </div>
                 <div class="btn">
-                    <button type="button" class="register-btn">注册</button>
+                    <button type="button" class="register-btn" @click="registerPost">注册</button>
                 </div>
             </form>
             <div v-if="login" class="other">
@@ -219,6 +288,9 @@
         border-right: 1px solid #E3E5E7;
         margin: 43px 44px 0 45px;
     }
+    .login-panel .inp-login{
+        position: relative;
+    }
     .login-panel .inp-login form{
         width: 400px;
     }
@@ -253,6 +325,9 @@
     .login-panel .inp-login .tab-title .title.active{
         color: #4FA5D9;
         cursor: not-allowed;
+    }
+    .login-panel .inp-login .inp-area{
+        position: relative;
     }
     .login-panel .inp-login .inp{
         height: 44px;
@@ -350,5 +425,24 @@
         width: 28px;
         height: 28px;
         margin-right: 8px;
+    }
+    .login-panel .inp-login .inp-area .error-msg{
+        height: 24px;
+        line-height: 24px;
+        padding: 0 10px;
+        border-radius: 4px;
+        background-color: #E3E5E7;
+        color: white;
+        position: absolute;
+        top: 50%;
+        left: 50%;
+        transform: translate(-50%, -50%);
+        transition: all .5s;
+    }
+    .login-msg-enter-from,.login-msg-leave-to{
+        opacity: 0;
+    }
+    .login-msg-enter-to,.login-msg-leave-from{
+        opacity: 1;
     }
 </style>

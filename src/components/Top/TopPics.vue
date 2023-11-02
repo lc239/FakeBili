@@ -1,9 +1,9 @@
 <script setup>
     import { ref, watch } from 'vue';
-    import { useGenID } from '../../js/utils';
+    import { useGenID } from '@/js/utils';
 
-    const topPicPathPrefix = './src/assets/images/top-pics/'
-    const topPicAnimePathPrefix = './src/assets/animes/top-pics/'
+    const topPicPathPrefix = '/images/top-pics/'
+    const topPicAnimePathPrefix = '/animes/top-pics/'
     const topPicPathSuffix = '.png@1c.webp'
     //在电脑缩放比150浏览器缩放比100下的图片,视频属性
     const picStatus = useGenID([

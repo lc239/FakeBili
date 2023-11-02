@@ -5,7 +5,7 @@
 <template>
         <div v-show="$props.show" class="channel-classes-shell" :class="{up: dir === 'up', down: dir === 'down'}">
             <div class="channel-classes">
-                <a class="channel-class-item" v-for="item in $props.classes" :key="item.id">{{ item.name }}</a>
+                <a :href="item.href" class="channel-class-item" v-for="item in $props.classes" :key="item.id">{{ item.name }}</a>
             </div>
         </div>
 </template>
@@ -14,7 +14,6 @@
     .channel-classes-shell{
         position: absolute;
         z-index: 50;
-        padding-bottom: 6px;
     }
     .channel-classes{
         display: grid;
@@ -30,6 +29,11 @@
     }
     .channel-classes-shell.up{
         bottom: 100%;
+        padding-bottom: 6px;
+    }
+    .channel-classes-shell.down{
+        top: 100%;
+        padding-top: 6px;
     }
     .channel-classes a{
         padding: 0 6px;

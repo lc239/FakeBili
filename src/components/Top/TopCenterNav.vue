@@ -3,7 +3,7 @@
     import { useHistoryStore } from '@/stores/index-history'
     import { storeToRefs } from 'pinia'
 
-    const trendsPicPathPrefix = './src/assets/images/top-nav/trends/'
+    const trendsPicPathPrefix = '/images/top-nav/trends/'
     const trends = [{id:1,text:'S13瑞士轮DK KT',src:'onLive.gif'},{id:2,text:'JDG战胜BLG',src:'hot.png'},{id:3,text:'G2翻盘战胜WBG',src:'hot.png'},{id:4,text:'被211大学讲师抽查知识点',src:'new.png'},{id:5,text:'王多多鼓鼓957群口相声',src:null}]
 
     const historyStore = useHistoryStore()//历史记录store

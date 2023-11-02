@@ -18,7 +18,9 @@ body *{
   padding: 0;
   box-sizing: border-box;
   font-family: inherit;
+  font-weight: inherit;
   font-size: 100%;
+  color: inherit;
 }
 body a{
   text-decoration: none;
@@ -31,4 +33,9 @@ body button{
   --text1: #61666D;
   --text2: #18191C;
   --link1: #00AEEC;
+  --Ga2: #E3E5E7;
+}
+.nickname, .counts .num, .service-title{
+  font-family: PingFang SC,HarmonyOS_Medium,Helvetica Neue,Microsoft YaHei,sans-serif;
+  font-weight: 500;
 }

@@ -13,7 +13,7 @@
         <TopPics :pic-offset="picoffset"></TopPics>
         <div class="logo">
             <a href="https://www.bilibili.com/?spm_id_from=333.1007.0.0">
-                <img src="@/assets/images/top-pics/logo.png">
+                <img src="@/assets/images/header/logo.png">
             </a>
         </div>
         <div class="top-shadow"></div>

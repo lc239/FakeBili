@@ -1,8 +1,8 @@
 <script setup>
-    import { ref } from 'vue'
+    import { reactive } from 'vue'
     import ChannelClasses from '@/components/Channel/ChannelClasses.vue'
     import { useGenID } from '@/js/utils'
-    import { useFadeArr } from '@/js/mouse'
+    import { useAreaIn } from '@/js/mouse'
 
     const anime = useGenID([
         {name: '连载动画', href: ''}, {name: '完结动画', href: ''}, {name: '资讯', href: ''}, {name: '官方延伸', href: ''},
@@ -12,14 +12,34 @@
         {name: '国产动画', href: ''}, {name: '国产原创相关', href: ''}, {name: '布袋戏', href: ''}, {name: '动态漫·广播剧', href: ''},
         {name: '资讯', href: ''}, {name: '新番时间表', href: ''}, { name: '国产动画索引', href: ''}
     ])
+    const entertainment = useGenID([
+        {name: '综艺', href: ''}, {name: '娱乐杂谈', href: ''}, {name: '粉丝创作', href: ''}, {name: '明星综合', href: ''}
+    ])
+    const game = useGenID([
+        {name: '单机游戏', href: ''}, {name: '电子竞技', href: ''}, {name: '手机游戏', href: ''}, {name: '网络游戏', href: ''}, {name: '桌游棋牌', href: ''},
+        {name: 'GMV', href: ''}, {name: '音游', href: ''}, {name: 'Mugen', href: ''}, {name: '游戏赛事', href: ''}
+    ])
+    const more = [
+        {name: '搞笑', href: ''}, {name: '单机游戏', href: ''}, {name: '虚拟UP主', href: ''}, {name: '公益', href: ''}, {name: '公开课', href: ''}
+    ]
 
     const channelLeft = useGenID([
-        {name: '番剧', classes: anime, dir: 'up'}, {name: '国创', classes: domestic, dir: 'up'}, {name: '综艺'}, {name: '动画'}, {name: '鬼畜'}, {name: '舞蹈'}, {name: '娱乐'}, {name: '科技'}, {name: '美食'},
-        {name: '汽车'}, {name: '运动'}, {name: 'VLOG'}, {name: '电影'}, {name: '电视剧'}, {name: '纪录片'}, {name: '游戏'}, {name: '音乐'}, {name: '影视'},
+        {name: '番剧', classes: anime}, {name: '国创', classes: domestic}, {name: '综艺'}, {name: '动画'}, {name: '鬼畜'}, {name: '舞蹈'},
+        {name: '娱乐', classes: entertainment}, {name: '科技'}, {name: '美食'}, {name: '汽车'}, {name: '运动'}, {name: 'VLOG'},
+        {name: '电影'}, {name: '电视剧'}, {name: '纪录片'}, {name: '游戏', classes: game}, {name: '音乐'}, {name: '影视'},
         {name: '知识'}, {name: '资讯'}, {name: '生活'}, {name: '时尚'}, {name: '动物圈'}
     ])
-    const channelArea = ref([])
-    const inChannelArea = useFadeArr(channelArea)
+    channelLeft.forEach((e, i, arr) => {
+        //还有一个更多,长度需要加一
+        if(i < (arr.length + 1) / 2) e.dir = 'up'
+        else e.dir = 'down'
+    })
+
+    const inChannelArea = []
+    const inMoreArea = reactive({in: false})
+    for(let i = 0; i < channelLeft.length; i++){
+        inChannelArea.push(reactive({in: false}))
+    }
 </script>
 
 <template>
@@ -46,18 +66,20 @@
             </a>
         </div>
         <div class="channels-left">
-            <div ref="channelArea" v-for="(item, index) in channelLeft" :key="item.id">
+            <div :ref="el => useAreaIn(el, inChannelArea[item.id - 1], 200)" v-for="item in channelLeft" :key="item.id">
                 <a href="">{{ item.name }}</a>
                 <Transition :name="'fade' + item.dir">
-                    <ChannelClasses v-if="item.classes" :classes="item.classes" :dir="item.dir" :show="inChannelArea[index]"></ChannelClasses>
+                    <ChannelClasses v-if="item.classes" :classes="item.classes" :dir="item.dir" :show="inChannelArea[item.id - 1].in"></ChannelClasses>
                 </Transition>
             </div>
-            <div class="more">
-                <span>更多</span>
-                <svg width="10" height="10" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg" class="channel-entry-more__link--arrow">
+            <div :ref="el => useAreaIn(el, inMoreArea, 200)" class="more">
+                <span>更多<svg width="10" height="10" viewBox="0 0 9 9" fill="none" xmlns="http://www.w3.org/2000/svg" class="channel-entry-more__link--arrow">
                     <path fill-rule="evenodd" clip-rule="evenodd" d="M7.50588 3.40623C7.40825 3.3086 7.24996 3.3086 7.15232 3.40623L4.41244 6.14612L1.67255 3.40623C1.57491 3.3086 1.41662 3.3086 1.31899 3.40623C1.22136 3.50386 1.22136 3.66215 1.31899 3.75978L4.11781 6.5586C4.28053 6.72132 4.54434 6.72132 4.70706 6.5586L7.50588 3.75978C7.60351 3.66215 7.60351 3.50386 7.50588 3.40623Z" fill="currentColor"></path>
                     <path d="M7.15232 3.40623L7.50588 3.75978L7.50588 3.75978L7.15232 3.40623ZM7.50588 3.40623L7.15232 3.75978L7.15233 3.75978L7.50588 3.40623ZM4.41244 6.14612L4.05888 6.49967C4.15265 6.59344 4.27983 6.64612 4.41244 6.64612C4.54504 6.64612 4.67222 6.59344 4.76599 6.49967L4.41244 6.14612ZM1.67255 3.40623L2.0261 3.05268L2.0261 3.05268L1.67255 3.40623ZM1.31899 3.40623L0.965439 3.05268L0.965439 3.05268L1.31899 3.40623ZM1.31899 3.75978L1.67255 3.40623V3.40623L1.31899 3.75978ZM4.11781 6.5586L3.76425 6.91215L4.11781 6.5586ZM4.70706 6.5586L4.35351 6.20505L4.70706 6.5586ZM7.50588 3.75978L7.15233 3.40623L7.15232 3.40623L7.50588 3.75978ZM7.50588 3.75978C7.40825 3.85742 7.24996 3.85742 7.15232 3.75978L7.85943 3.05268C7.56654 2.75978 7.09166 2.75978 6.79877 3.05268L7.50588 3.75978ZM4.76599 6.49967L7.50588 3.75978L6.79877 3.05268L4.05888 5.79257L4.76599 6.49967ZM1.31899 3.75978L4.05888 6.49967L4.76599 5.79257L2.0261 3.05268L1.31899 3.75978ZM1.67254 3.75979C1.57491 3.85742 1.41662 3.85742 1.31899 3.75979L2.0261 3.05268C1.73321 2.75978 1.25833 2.75978 0.965439 3.05268L1.67254 3.75979ZM1.67255 3.40623C1.77018 3.50386 1.77018 3.66215 1.67255 3.75978L0.965439 3.05268C0.672546 3.34557 0.672546 3.82044 0.965439 4.11334L1.67255 3.40623ZM4.47136 6.20505L1.67255 3.40623L0.965439 4.11334L3.76425 6.91215L4.47136 6.20505ZM4.35351 6.20505C4.38605 6.1725 4.43882 6.1725 4.47136 6.20505L3.76425 6.91215C4.12223 7.27013 4.70264 7.27013 5.06062 6.91215L4.35351 6.20505ZM7.15232 3.40623L4.35351 6.20505L5.06062 6.91215L7.85943 4.11334L7.15232 3.40623ZM7.15233 3.75978C7.05469 3.66215 7.05469 3.50386 7.15233 3.40623L7.85943 4.11334C8.15233 3.82045 8.15233 3.34557 7.85943 3.05268L7.15233 3.75978Z" fill="currentColor"></path>
-                </svg>
+                </svg></span>
+                <Transition name="fadedown">
+                    <ChannelClasses :classes="more" dir="down" :show="inMoreArea.in"></ChannelClasses>
+                </Transition>
             </div>
         </div>
         <div class="channels-right">
@@ -152,6 +174,7 @@
         grid-template-columns: repeat(12, 1fr);
         padding-right: 30px;
         border-right: 1px solid #E3E5E7;
+        color: var(--text1);
     }
     .header-channel .channels-left > div{
         height: 30px;
@@ -166,10 +189,12 @@
         display: flex;
         flex-direction: column;
         align-items: center;
-    }
-    .header-channel .channels-left > div > a{
+        cursor: pointer;
         transition: all .3s;
-        color: var(--text1);
+    }
+    .header-channel .channels-left > div:hover{
+        color: var(--text2);
+        background-color: #E3E5E7;
     }
     .header-channel .channels-left > :nth-child(12n){
         letter-spacing: 0;
@@ -183,10 +208,6 @@
     }
     .header-channel .channels-left .more:hover svg{
         transform: rotate(180deg);
-    }
-    .header-channel .channels-left > :hover{
-        color: var(--text2);
-        background-color: #E3E5E7;
     }
     .header-channel .channels-right{
         display: grid;
