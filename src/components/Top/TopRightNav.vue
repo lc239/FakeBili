@@ -1,5 +1,5 @@
 <script setup>
-    import { inject, reactive, ref, watch } from 'vue'
+    import { inject, onMounted, reactive, ref, watch } from 'vue'
     import { useAreaIn } from '@/js/mouse'
     import { useUserStore } from '@/stores/user'
     import { storeToRefs } from 'pinia'
@@ -19,6 +19,7 @@
     })
     const openLoginOrRegisterPanel = inject('openLoginOrRegisterPanel')
 
+    //头像缩放动画设置
     const avatar = ref(null)
     watch(avatar, v => {
         if(v){
@@ -42,6 +43,9 @@
         animation.updatePlaybackRate(-1)
         animation.play()
     }
+    onMounted(() => {
+        inLoginArea.in = true
+    })
 </script>
 
 <template>
@@ -435,14 +439,6 @@
         z-index: 1000;
         
     }
-    @keyframes avatarLarge {
-        100%{
-            transform: scale(2.5) translate(0, 10px);
-        }
-    }
-    .right-nav .avatar-area:hover .avatar{
-        
-    }
     .right-nav .avatar img{
         width: 100%;
         height: 100%;
@@ -494,6 +490,7 @@
         color: white;
         transition: all .3s;
         cursor: pointer;
+        font-size: 14px;
     }
     .right-nav .login-area .login-content .login-btn:hover{
         background-color: #00B5E5;

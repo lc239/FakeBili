@@ -41,6 +41,7 @@
     .top-nav ul li{
         height: 100%;
     }
+    /* 左导航处的弹一下动画 */
     .top-nav .move{
         position: relative;
     }

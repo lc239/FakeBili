@@ -1,15 +1,23 @@
 <script setup>
     import { ref, onMounted, reactive, watch } from 'vue'
     import { useAreaIn } from '@/js/mouse'
+    import { useGenID } from '@/js/utils'
 
     const s13States = ['s13-state0','s13-state1','s13-state2']
     const s13Cls = ref('s13-state0')
     
     const downloadArea = ref(null)
     const inDownloadArea = reactive({in: false})
-    watch(downloadArea, (v) => {
+    const comicArea = ref(null)
+    const inComicArea = reactive({in: false})
+    watch(downloadArea, v => {
         if(v){
             useAreaIn(v, inDownloadArea, 200)
+        }
+    })
+    watch(comicArea, v => {
+        if(v){
+            useAreaIn(v, inComicArea, 200)
         }
     })
 
@@ -27,6 +35,24 @@
             }
         }, 4500)
     })
+
+    const comic = [
+        {img: '/assets/comic/1.png', href: '', title: '天官赐福'}, {img: '/assets/comic/2.jpg', href: '', title: '刀剑神域 Alicization篇'},
+        {img: '/assets/comic/3.jpg', href: '', title: '石之海（乔乔的奇妙冒险第6部）'}, {img: '/assets/comic/4.png', href: '', title: '鬼灭之刃'},
+        {img: '/assets/comic/5.jpg', href: '', title: '葬送的芙莉莲'}, {img: '/assets/comic/6.jpg', href: '', title: '间谍过家家'},
+        {img: '/assets/comic/7.jpg', href: '', title: '碧蓝之海'}, {img: '/assets/comic/8.png', href: '', title: '我家老婆来自一千年前'},
+        {img: '/assets/comic/9.jpg', href: '', title: '香格里拉边境~粪作猎人向神作游戏发起挑战~'}, {img: '/assets/comic/10.jpg', href: '', title: '航海王'}
+    ]
+    const comicLeft = useGenID(comic.slice(0, 4))
+    const comicRight = useGenID(comic.slice(4, 10))
+    const comicRightImg = ref(null)
+    function changeComicRightImg(img){
+        if(img){
+            comicRightImg.value.src = img
+            comicRightImg.value.style.display = ''
+        }
+        else comicRightImg.value.style.display = 'none'
+    }
 </script>
 
 <template>
@@ -43,7 +69,26 @@
         <li><a href=""><div class="move">直播</div></a></li>
         <li><a href=""><div class="move">游戏中心</div></a></li>
         <li><a href=""><div class="move">会员购</div></a></li>
-        <li><a href=""><div class="move">漫画</div></a></li>
+        <li :ref="el => comicArea = el">
+            <a href=""><div class="move">漫画</div></a>
+            <Transition name="fadedown">
+                <div v-if="inComicArea.in" class="comic-shell pop-shell">
+                    <div class="comic-content">
+                        <div class="left">
+                            <a v-for="item in comicLeft" :key="item.id" :href="item.href">
+                                <img :src="item.img" :title="item.title">
+                                <div class="title">{{ item.title }}</div>
+                            </a>
+                        </div>
+                        <div class="right">
+                            <div class="title">人气漫画</div>
+                            <a v-for="(item, index) in comicRight" :key="item.id" :href="item.href" :title="item.title" @mouseover="changeComicRightImg(item.img)" @mouseout="changeComicRightImg()"><span class="index">{{ index + 1 }}</span><span class="title">{{ item.title }}</span></a>
+                            <img ref="comicRightImg" style="display: none;">
+                        </div>
+                    </div>
+                </div>
+            </Transition>
+        </li>
         <li><a href=""><div class="move">赛事</div></a></li>
         <li>
             <a href="" class="s13" :class="[s13Cls]">
@@ -113,6 +158,101 @@
     .left-nav li:first-child svg{
         margin-right: 6px;
         vertical-align: text-top;
+    }
+    .left-nav > li > .comic-shell{
+        padding-top: 8px;
+        margin-left: -150px;
+    }
+    .left-nav > li > .comic-shell .comic-content{
+        background-color: white;
+        height: 260px;
+        width: 505px;
+        box-shadow: 0 0 30px rgba(0, 0, 0, .1);
+        border-radius: 8px;
+        border: 1px solid var(--Ga2);
+        color: var(--text2);
+        padding: 21px 20px;
+        display: flex;
+    }
+    .left-nav > li > .comic-shell .comic-content .left{
+        display: grid;
+        grid-template-columns: repeat(2, 136px);
+        grid-template-rows: repeat(2, 100px);
+        row-gap: 16px;
+        column-gap: 16px;
+        height: 216px;
+        padding-right: 20px;
+    }
+    .left-nav > li > .comic-shell .comic-content .left a{
+        transition: color .3s;
+    }
+    .left-nav > li > .comic-shell .comic-content .left a:hover{
+        color: #00AEEC;
+    }
+    .left-nav > li > .comic-shell .comic-content .left img{
+        width: 100%;
+        border-radius: 8px;
+    }
+    .left-nav > li > .comic-shell .comic-content .left .title{
+        font-size: 12px;
+        font-family: PingFang SC,HarmonyOS_Medium,Helvetica Neue,Microsoft YaHei,sans-serif;
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+    }
+    .left-nav > li > .comic-shell .comic-content .right{
+        border-left: .5px solid var(--Ga2);
+        width: 145px;
+        padding-left: 20px;
+        display: flex;
+        flex-direction: column;
+        position: relative;
+    }
+    .left-nav > li > .comic-shell .comic-content .right > .title{
+        font-size: 20px;
+        color: var(--text2);
+        font-family: PingFang SC,HarmonyOS_Medium,Helvetica Neue,Microsoft YaHei,sans-serif;
+        margin-bottom: 10px;
+    }
+    .left-nav > li > .comic-shell .comic-content .right a{
+        text-overflow: ellipsis;
+        overflow: hidden;
+        white-space: nowrap;
+        line-height: 31px;
+        border-radius: 4px;
+        transition: background-color .2s;
+    }
+    .left-nav > li > .comic-shell .comic-content .right a:hover{
+        background-color: var(--Ga2);
+    }
+    .left-nav > li > .comic-shell .comic-content .right .index{
+        font-family: Avenir;
+        font-style: italic;
+        color: #C9CCD0;
+        font-weight: 900;
+        margin-right: 5px;
+        font-size: 14px;
+    }
+    .left-nav > li > .comic-shell .comic-content .right a .title{
+        vertical-align: middle;
+        font-size: 13px;
+        color: var(--text1);
+    }
+    .left-nav > li > .comic-shell .comic-content .right a:nth-of-type(1) .index{
+        color: #FF473D;
+    }
+    .left-nav > li > .comic-shell .comic-content .right a:nth-of-type(2) .index{
+        color: #FF6A29;
+    }
+    .left-nav > li > .comic-shell .comic-content .right a:nth-of-type(3) .index{
+        color: #FF9214;
+    }
+    .left-nav > li > .comic-shell .comic-content .right img{
+        position: absolute;
+        left: 100%;
+        width: 160px;
+        height: 213px;
+        border-radius: 8px;
     }
     .left-nav li:nth-child(8){
         overflow: hidden;

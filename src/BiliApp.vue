@@ -1,7 +1,8 @@
 <script setup>
     import HeaderBanner from '@/components/HeaderBanner.vue'
     import HeaderChannel from '@/components/HeaderChannel.vue'
-    import LoginPanel from './components/LoginPanel.vue'
+    import RecommendMain from '@/components/RecommendMain.vue'
+    import LoginPanel from '@/components/LoginPanel.vue'
     import { provide, ref } from 'vue'
     import instance from './conf/axios-instance'
     import { useUserStore } from '@/stores/user'
@@ -36,6 +37,7 @@
     <div id="bili">
         <HeaderBanner></HeaderBanner>
         <HeaderChannel></HeaderChannel>
+        <RecommendMain></RecommendMain>
     </div>
     <Transition name="mask">
         <div v-if="reqLogin" id="bili-mask">
@@ -59,6 +61,11 @@
         display: flex;
         align-items: center;
         justify-content: center;;
+    }
+    .pop-shell{
+        position: absolute;
+        transition: all .3s;
+        z-index: 1000;
     }
     .fadedown-enter-from,.fadedown-leave-to{
         opacity: 0;
