@@ -62,10 +62,26 @@
         align-items: center;
         justify-content: center;;
     }
+    .column-shell-container{
+        display: flex;
+        flex-direction: column;
+        align-items: center;
+        position: relative;
+    }
     .pop-shell{
         position: absolute;
         transition: all .3s;
         z-index: 1000;
+        cursor: default;
+    }
+    .fade-enter-from,.fade-leave-to{
+        opacity: 0;
+    }
+    .fade-enter-active,.fade-leave-active{
+        transition: all .3s;
+    }
+    .fade-leave-active{
+        pointer-events: none;
     }
     .fadedown-enter-from,.fadedown-leave-to{
         opacity: 0;

@@ -81,7 +81,7 @@
                 <div class="history">
                     <div class="history-item" v-for="(item) in history" :key="item.id" @click="search(item.text)">
                         <div class="history-text">{{ item.text }}</div>
-                        <svg class="history-item-delete" viewBox="0 0 1024 1024" width="14" height="14" @click.stop="clearHistory(item)">
+                        <svg class="history-item-delete" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 1024 1024" width="14" height="14" @click.stop="clearHistory(item)">
                             <path d="M512 64.303538c-247.25636 0-447.696462 200.440102-447.696462 447.696462
                                 0 247.254314 200.440102 447.696462 447.696462 447.696462s447.696462-200.440102
                                 447.696462-447.696462S759.25636 64.303538 512 64.303538zM710.491727 665.266709c12.491499
@@ -113,7 +113,6 @@
 <style>
     .center-nav{
         flex:1;
-        margin: 0 auto;
         min-width: 181px;
         max-width: 500px;
         height: 38px;
@@ -122,6 +121,7 @@
         display: flex;
         align-items: center;
         height: 40px;
+        border: 1px solid var(--Ga2);
         border-radius: 8px;
         background-color: #f1f2f3;
         opacity: 0.9;
@@ -170,6 +170,7 @@
     .search-nav .search-btn{
         width: 32px;
         height: 32px;
+        line-height: 100%;
         border: none;
         border-radius: 6px;
         margin-left: 9px;

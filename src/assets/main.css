@@ -19,6 +19,7 @@ body *{
   box-sizing: border-box;
   font-family: inherit;
   font-weight: inherit;
+  font-size: inherit;
   color: inherit;
 }
 body a{

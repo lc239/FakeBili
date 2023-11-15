@@ -2,14 +2,29 @@
     import TopLeftNav from '@/components/Top/TopLeftNav.vue'
     import TopCenterNav from '@/components/Top/TopCenterNav.vue'
     import TopRightNav from '@/components/Top/TopRightNav.vue'
-    import { ref } from 'vue';
+    import { onMounted, ref } from 'vue';
 
-    const change = ref(true)
+    const topNav = ref(null)
+    const slideDown = ref(false)
+    onMounted(() => {
+        //检查父节点即headerbanner在视口的可见度，75可见时让顶部导航切换类
+        const observer = new IntersectionObserver((e) => {
+            slideDown.value = !e[0].isIntersecting
+            // if(!e[0].isIntersecting){
+            //     topNav.value.classList.add('slide-down')
+            //     slideDown.value = true
+            // }else{
+            //     topNav.value.classList.remove('slide-down')
+            //     slideDown.value = false
+            // }
+        }, {threshold: 0.6})
+        observer.observe(topNav.value.parentNode)
+    })
 </script>
 
 <template>
-    <div ref="topNav" class="top-nav" :class="{'slide-down':change}">
-        <TopLeftNav></TopLeftNav>
+    <div ref="topNav" class="top-nav" :class="{'slide-down':slideDown}">
+        <TopLeftNav :slideDown="slideDown"></TopLeftNav>
         <TopCenterNav></TopCenterNav>
         <TopRightNav></TopRightNav>
     </div>
@@ -27,9 +42,12 @@
         z-index: 50;
         display: flex;
         align-items: center;
+        justify-content: space-between;
     }
     .top-nav.slide-down{
         position: fixed;
+        background-color: white;
+        box-shadow: inset 0 -1px 0 var(--Ga2)
     }
     .top-nav ul{
         display: flex;
