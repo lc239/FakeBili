@@ -1,5 +1,5 @@
 <script setup>
-import { inject } from 'vue'
+    import { inject } from 'vue'
     const openLoginOrRegisterPanel = inject('openLoginOrRegisterPanel')
 </script>
 
@@ -33,7 +33,7 @@ import { inject } from 'vue'
         width: 100%;
         text-align: center;
         margin-bottom: 24px;
-        color: #9499A0;
+        color: var(--grey1);
     }
     .login-tip .login-tip-content .login-btn{
         width: 100%;

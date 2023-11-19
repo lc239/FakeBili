@@ -3,7 +3,7 @@
 </script>
 
 <template>
-        <div v-show="$props.show" class="channel-classes-shell" :class="{up: dir === 'up', down: dir === 'down'}">
+        <div v-show="$props.show" class="channel-classes-shell pop-shell" :class="{up: dir === 'up', down: dir === 'down'}">
             <div class="channel-classes">
                 <a :href="item.href" class="channel-class-item" v-for="item in $props.classes" :key="item.id">{{ item.name }}</a>
             </div>
@@ -11,10 +11,6 @@
 </template>
 
 <style>
-    .channel-classes-shell{
-        position: absolute;
-        z-index: 50;
-    }
     .channel-classes{
         display: grid;
         grid-auto-flow: column;
@@ -24,7 +20,7 @@
         width: max-content;
         background-color: white;
         border-radius: 8px;
-        border: 1px solid #E3E5E7;
+        border: 1px solid var(--Ga2);
         box-shadow: 0 0 30px rgba(0,0,0,.1)
     }
     .channel-classes-shell.up{
@@ -48,6 +44,6 @@
         transition: all .3s;
     }
     .channel-classes a:hover{
-        background-color: #E3E5E7;
+        background-color: var(--Ga2);
     }
 </style>

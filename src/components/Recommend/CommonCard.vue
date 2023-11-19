@@ -47,7 +47,6 @@
     <div class="common-card">
         <a :ref="el => visualArea = el" class="visual" href="">
             <Transition name="fade"><img class="cover" :src="cover" v-show="!inVisualArea.in"></Transition>
-            
             <video v-if="inVisualArea.in" class="video" :ref="el => play(el)"></video>
             <Transition name="fade">
                 <div class="bottom" v-show="!inVisualArea.in">
@@ -143,9 +142,7 @@
     .common-card .visual .cover, .common-card .visual .video{
         width: 100%;
         height: 100%;
-        object-fit: contain;
-        object-position: center;
-        vertical-align: bottom;
+        object-fit: cover;
     }
     .common-card .description{
         margin-top: 10px;
@@ -171,7 +168,7 @@
         transition: color .2s;
     }
     .common-card .description .update-info{
-        color: #9499A0;
+        color: var(--grey1);
         font-size: 13px;
         line-height: var(--update-info-line-height);
         margin-top: 4px;

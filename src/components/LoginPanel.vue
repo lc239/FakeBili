@@ -285,7 +285,7 @@
     .login-panel > .line{
         width: 1px;
         height: 228px;
-        border-right: 1px solid #E3E5E7;
+        border-right: 1px solid var(--Ga2);
         margin: 43px 44px 0 45px;
     }
     .login-panel .inp-login{
@@ -297,11 +297,11 @@
     .login-panel .inp-login form .inp-area{
         width: 100%;
         height: 90px;
-        border: 1px solid #E3E5E7;
+        border: 1px solid var(--Ga2);
         border-radius: 8px;
     }
     .login-panel .inp-login form .inp-area > .line{
-        border-bottom: 1px solid #E3E5E7;
+        border-bottom: 1px solid var(--Ga2);
     }
     .login-panel .inp-login .register-form .inp-area{
         height: 180px;
@@ -316,7 +316,7 @@
     }
     .login-panel .inp-login .tab-title > .line{
         height: 20px;
-        border-right: 1px solid #E3E5E7;
+        border-right: 1px solid var(--Ga2);
         margin: 0 21px;
     }
     .login-panel .inp-login .tab-title .title{
@@ -348,7 +348,7 @@
     }
     .login-panel .inp-login .inp > .line{
         height: 26px;
-        border-right: 1px solid #E3E5E7;
+        border-right: 1px solid var(--Ga2);
     }
     .login-panel .inp-login .inp label{
         display: flex;
@@ -383,7 +383,7 @@
     .login-panel .inp-login .btn button{
         width: 194px;
         height: 40px;
-        border: 1px solid #E3E5E7;
+        border: 1px solid var(--Ga2);
         border-radius: 8px;
     }
     .login-panel .inp-login .btn .go-register-btn{
@@ -404,7 +404,7 @@
     }
     .login-panel .inp-login .other{
         width: 100%;
-        color: #9499A0;
+        color: var(--grey1);
         font-size: 13px;
         margin-top: 24px;
     }
@@ -431,7 +431,7 @@
         line-height: 24px;
         padding: 0 10px;
         border-radius: 4px;
-        background-color: #E3E5E7;
+        background-color: var(--Ga2);
         color: white;
         position: absolute;
         top: 50%;

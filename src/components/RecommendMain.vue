@@ -5,8 +5,9 @@
     import 'swiper/css'
     import 'swiper/css/navigation'
     import 'swiper/css/pagination'
-    import { onMounted, ref } from 'vue'
+    import { ref, onMounted } from 'vue'
     import CommonCard from './Recommend/CommonCard.vue'
+    import StaticCard from './Recommend/StaticCard.vue'
 
     const swiperTitle = ref(null)
     const swiperTitles = ['天使or恶魔', '什么，我的数字居然是', '史上最可爱“红娘”！海龟驮着两只螃蟹谈恋爱', '投稿瓜分万元现金！', '来画蔚蓝档案吧！', '上B站看围棋 男子围甲第五轮开启']
@@ -18,9 +19,9 @@
         uploadDate: '11-9', path: '/assets/video/pre/1.mpd'},
         {name:'云云云', cover: '/assets/cover/2.png', playCount: 12345, thumbCount: 12000, bulletCount: 2, duration: '00:07', uploaderName: '名字2', uploadDate: '11-9',
         path: '/assets/video/pre/2.mpd'},
-        {name:'山水画', cover: '/assets/cover/3.png', playCount: 12345, thumbCount: 12000, bulletCount: 2, duration: '00:07', uploaderName: '名字2', uploadDate: '11-9',
+        {name:'山水画', cover: '/assets/cover/3.png', playCount: 23, thumbCount: 12000, bulletCount: 12000, duration: '00:07', uploaderName: '名字2', uploadDate: '11-9',
         path: '/assets/video/pre/3.mpd'},
-        {name:'动画混剪', cover: '/assets/cover/4.png', playCount: 12345, thumbCount: 12000, bulletCount: 2, duration: '00:07', uploaderName: '名字2', uploadDate: '11-9',
+        {name:'动画混剪', cover: '/assets/cover/4.png', playCount: 12345, thumbCount: 12000, bulletCount: 2, duration: '1:00:07', uploaderName: '名字2', uploadDate: '11-9',
         path: '/assets/video/pre/4.mpd'},
         {name:'薇尔莉特', cover: '/assets/cover/5.png', playCount: 12345, thumbCount: 12000, bulletCount: 2, duration: '00:07', uploaderName: '名字2', uploadDate: '11-9',
         path: '/assets/video/pre/5.mpd'},
@@ -36,14 +37,32 @@
         path: '/assets/video/pre/10.mpd'}
     ])
 
-    let nextSwiperSlideBtn
-    function onSwiper(s){
-        nextSwiperSlideBtn = s.navigation.nextEl
-    }
+    const recommendArr = [
+        {type: 1, title: '直播组件', area: '测试分区', cover: '/assets/cover/10.png', viewCount: 100, upName: '直播人'},
+        {name:'Aurora Days(友奈)', cover: '/assets/cover/10.png', playCount: 12345, thumbCount: 12000, bulletCount: 2, duration: '00:07', uploaderName: '名字2', uploadDate: '11-9',
+        path: '/assets/video/pre/10.mpd'},
+        {name:'Aurora Days(友奈)', cover: '/assets/cover/10.png', playCount: 12345, thumbCount: 12000, bulletCount: 2, duration: '00:07', uploaderName: '名字2', uploadDate: '11-9',
+        path: '/assets/video/pre/10.mpd'},
+        {name:'Aurora Days(友奈)', cover: '/assets/cover/10.png', playCount: 12345, thumbCount: 12000, bulletCount: 2, duration: '00:07', uploaderName: '名字2', uploadDate: '11-9',
+        path: '/assets/video/pre/10.mpd'},
+        {name:'Aurora Days(友奈)', cover: '/assets/cover/10.png', playCount: 12345, thumbCount: 12000, bulletCount: 2, duration: '00:07', uploaderName: '名字2', uploadDate: '11-9',
+        path: '/assets/video/pre/10.mpd'},
+        {type: 2, title: '番剧组件', cover: '/assets/cover/10.png', state: '更新至第7话 · 周一更新', playCount: 1765012, likeCount: 62345},
+        {name:'Aurora Days(友奈)', cover: '/assets/cover/10.png', playCount: 12345, thumbCount: 12000, bulletCount: 2, duration: '00:07', uploaderName: '名字2', uploadDate: '11-9',
+        path: '/assets/video/pre/10.mpd'},
+        {name:'Aurora Days(友奈)', cover: '/assets/cover/10.png', playCount: 12345, thumbCount: 12000, bulletCount: 2, duration: '00:07', uploaderName: '名字2', uploadDate: '11-9',
+        path: '/assets/video/pre/10.mpd'},
+        {name:'Aurora Days(友奈)', cover: '/assets/cover/10.png', playCount: 12345, thumbCount: 12000, bulletCount: 2, duration: '00:07', uploaderName: '名字2', uploadDate: '11-9',
+        path: '/assets/video/pre/10.mpd'},
+        {name:'Aurora Days(友奈)', cover: '/assets/cover/10.png', playCount: 12345, thumbCount: 12000, bulletCount: 2, duration: '00:07', uploaderName: '名字2', uploadDate: '11-9',
+        path: '/assets/video/pre/10.mpd'},
+        {type: 3, title: '电视剧组件', cover: '/assets/cover/10.png', upName: '电视剧up', playCount: 785123}
+    ]
+
     function onPaginationUpdate(s){
         swiperTitle.value.innerText = swiperTitles[s.realIndex]
         const diff = s.realIndex - s.previousRealIndex
-        if(diff > 0){
+        if(s.progressLoop === 1 || diff > 0){
             s.pagination.bullets[s.realIndex].classList.remove('from-right')
             s.pagination.bullets[s.realIndex].classList.add('from-left')
         }else if(diff < 0){
@@ -60,8 +79,12 @@
         s.pagination.bullets[s.realIndex].classList.remove('from-left')
         s.pagination.bullets[s.realIndex].classList.add('from-right')
     }
+    let nextSwiperSlideBtn
+    function onSwiper(s){
+        nextSwiperSlideBtn = s.navigation.nextEl
+    }
     let swiperTimer
-    //定时改变swiper
+    //定时改变swiper,因为使用autoplay组件后在循环时很难确定,为了吃豆人的方向符合预期,自己写
     function setSwiperTimer(){
         swiperTimer = setInterval(() => {
             nextSwiperSlideBtn.click()
@@ -78,7 +101,7 @@
 <template>
     <div class="recommend-main">
         <div class="recommend-swiper" @mouseenter="clearSwiperTimer" @mouseleave="setSwiperTimer">
-            <Swiper loop :modules="[Navigation, Pagination]" navigation :pagination="{clickable: true}" slides-per-view="1" space-between="50" @pagination-update="onPaginationUpdate" @navigation-next="onNavigationNext" @navigation-prev="onNavigationPrev" @swiper="onSwiper">
+            <Swiper :allow-touch-move="false" loop :modules="[Navigation, Pagination]" navigation :pagination="{clickable: true}" slides-per-view="1" space-between="50" @pagination-update="onPaginationUpdate" @navigation-next="onNavigationNext" @navigation-prev="onNavigationPrev" @swiper="onSwiper">
                 <SwiperSlide v-for="item in swiperImgs" :key="item.id">
                     <a :href="item.href"><img :src="item.img"></a>
                 </SwiperSlide>
@@ -87,20 +110,26 @@
             </Swiper>
         </div>
         <CommonCard v-for="item in recommend10" :key="item.id" v-bind="item"></CommonCard>
+        <component v-for="(item, i) in recommendArr" :key="i" :is="item.type ? StaticCard : CommonCard" v-bind="item"></component>
     </div>
 </template>
 
 <style>
     .recommend-main{
         --grid-gap: 20px;
-        --visual-cover-radio: 66.7%;
-        --visual-cover-radio-number: 0.667;
-        --card-height: 230px;
+        --ex-gap: 40px;
+        --visual-cover-radio: 63%;
+        --visual-cover-radio-number: 0.63;
+        --card-height: 240px;
         padding: 0 140px;
         display: grid;
         grid-template-columns: repeat(5, 1fr);
-        grid-auto-rows: var(--card-height);
+        grid-auto-rows: calc(var(--card-height) + var(--ex-gap));
         gap: var(--grid-gap);
+        grid-template-rows: repeat(2, var(--card-height));
+    }
+    .recommend-main > div:nth-child(n + 8){
+        margin-top: var(--ex-gap);
     }
     .recommend-main .recommend-swiper{
         --swiper-navigation-size: 14px;

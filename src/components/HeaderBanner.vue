@@ -2,10 +2,16 @@
     import TopPics from '@/components/Top/TopPics.vue'
     import TopNav from '@/components/Top/TopNav.vue'
     import { useFollow } from '@/js/mouse'
-    import { ref, computed } from 'vue'
+    import { ref, computed, onMounted } from 'vue'
     const headerBanner = ref(null)
     const mouseOffset = useFollow(headerBanner)//读取鼠标相对图片偏移
     const picoffset = computed(() => mouseOffset.value.x - mouseOffset.value.startX)
+
+    const topNavSlideDown = ref(false)
+    const topNavObserver = new IntersectionObserver(e => topNavSlideDown.value = !e[0].isIntersecting, {threshold: 0.6})
+    onMounted(() => {
+        topNavObserver.observe(headerBanner.value)
+    })
 </script>
 
 <template>
@@ -17,7 +23,7 @@
             </a>
         </div>
         <div class="top-shadow"></div>
-        <TopNav></TopNav>
+        <TopNav :slideDown="topNavSlideDown"></TopNav>
     </div>
 </template>
 

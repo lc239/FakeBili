@@ -7,8 +7,8 @@
     const trends = [{id:1,text:'S13瑞士轮DK KT',src:'onLive.gif'},{id:2,text:'JDG战胜BLG',src:'hot.png'},{id:3,text:'G2翻盘战胜WBG',src:'hot.png'},{id:4,text:'被211大学讲师抽查知识点',src:'new.png'},{id:5,text:'王多多鼓鼓957群口相声',src:null}]
 
     const historyStore = useHistoryStore()//历史记录store
-    const {clearHistory} = historyStore
-    const {history} = storeToRefs(historyStore)//localStorage读取历史搜索记录
+    const { clearHistory } = historyStore
+    const { history } = storeToRefs(historyStore)//localStorage读取历史搜索记录
     
     const cleanInput = ref('hidden')//搜索框旁的清除图标状态
     const centerNav = ref(null)
@@ -101,7 +101,7 @@
                 </div>
                 <div class="trends">
                     <div class="trend" v-for="(item) in trends" :key="item.id" @click="search(item.text)">
-                        <div class="rank" :style="{color:item.id < 4 ? 'var(--text2)' : '#9499A0'}">{{ item.id }}</div>
+                        <div class="rank" :style="{color:item.id < 4 ? 'var(--text2)' : 'var(--grey1)'}">{{ item.id }}</div>
                         <div class="text">{{ item.text }}</div>
                         <img v-if="item.src" :src="trendsPicPathPrefix + item.src">
                     </div>
@@ -145,7 +145,7 @@
         overflow: hidden;
     }
     .search-content.search-open{
-        background-color: #E3E5E7;
+        background-color: var(--Ga2);
     }
     .search-content input{
         flex: 1;
@@ -158,7 +158,7 @@
     }
     .search-content input:focus{
        outline: none;
-       background-color: #E3E5E7;
+       background-color: var(--Ga2);
        color: var(--text2);
     }
     .search-content svg{
@@ -179,7 +179,7 @@
         transition: all .3s;
     }
     .search-nav .search-btn:hover{
-        background-color: #E3E5E7;
+        background-color: var(--Ga2);
     }
     .search-panel{
         max-height: 612px;
@@ -204,7 +204,7 @@
         font-size: 12px;
         height: 15px;
         line-height: 15px;
-        color: #9499A0;
+        color: var(--grey1);
         cursor: pointer;
     }
     .header .clear-history:hover{
@@ -267,7 +267,7 @@
         cursor: pointer;
     }
     .trends .trend:hover{
-        background-color: #E3E5E7;
+        background-color: var(--Ga2);
     }
     .trends .trend .rank{
         width: 15px;

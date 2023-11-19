@@ -29,10 +29,15 @@ body button{
   cursor: pointer;
   border: none;
 }
+object.svg{
+  pointer-events: none;
+}
 :root{
   --text1: #61666D;
   --text2: #18191C;
-  --link1: #00AEEC;
+  --blue1: #00AEEC;
+  --grey1: #9499A0;
+  --link1: var(--blue1);
   --Ga2: #E3E5E7;
 }
 .nickname, .counts .num, .service-title{

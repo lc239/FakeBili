@@ -20,9 +20,6 @@ function useFollow(el) {
     onMounted(() => el.value.addEventListener('mouseenter',start))
     onMounted(() => el.value.addEventListener('mousemove', update))
     onMounted(() => el.value.addEventListener('mouseleave',end))
-    // onUnmounted(() => el.removeEventListener('mouseenter',start))
-    // onUnmounted(() => el.removeEventListener('mousemove', update))
-    // onUnmounted(() => el.removeEventListener('mouseleave',end))
   
     return xobj
 }
@@ -32,7 +29,7 @@ function useAreaIn(el, inArea, inDelay = 0, outDelay = 0){
         inArea.in = false
         return
     }
-    //:ref会被莫名其妙调用,比如s13动画会导致旁边的模板引用调用函数而且不会传一次null,用户面板的推荐服务鼠标进出也会调用,所以在有问题的地方我使用了ref加watch的形式防止添加一样的事件
+    //:ref会被莫名其妙调用,比如s13动画会导致旁边的模板引用调用函数而且不会传一次null,用户面板的推荐服务鼠标进出也会调用,所以在有问题的地方我使用了ref加watch的形式防止添加一样的多次事件
     let inTimer, outTimer
     el.addEventListener('mouseenter', () => {
         clearTimeout(outTimer)

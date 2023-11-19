@@ -28,9 +28,11 @@
             dynamicCount.value = res.data.dynamicCount
         })
     }
+
     if(token.value) queryBasic()
     provide('openLoginOrRegisterPanel', openLoginOrRegisterPanel)
     provide('queryBasic', queryBasic)
+    
 </script>
 
 <template>
@@ -74,10 +76,10 @@
         z-index: 1000;
         cursor: default;
     }
-    .fade-enter-from,.fade-leave-to{
+    .fade-enter-from,.fade-leave-to,.fadeforward-enter-from,.fadeforward-leave-from{
         opacity: 0;
     }
-    .fade-enter-active,.fade-leave-active{
+    .fade-enter-active,.fade-leave-active,.fadeforward-enter-active{
         transition: all .3s;
     }
     .fade-leave-active{
@@ -98,7 +100,7 @@
     }
     .fadeup-enter-from,.fadeup-leave-to{
         opacity: 0;
-        transform: translateY(-10px);
+        transform: translateY(10px);
     }
     .fadeup-enter-active,.fadeup-leave-active{
         transition: all .3s;
@@ -111,7 +113,7 @@
     }
     .faderight-enter-from,.faderight-leave-to{
         opacity: 0;
-        transform: translateX(-10px);
+        transform: translateX(10px);
     }
     .faderight-enter-active,.faderight-leave-active{
         transition: all .3s;

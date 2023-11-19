@@ -2,31 +2,26 @@
     import TopLeftNav from '@/components/Top/TopLeftNav.vue'
     import TopCenterNav from '@/components/Top/TopCenterNav.vue'
     import TopRightNav from '@/components/Top/TopRightNav.vue'
-    import { onMounted, ref } from 'vue';
+    import HeaderChannelFixed from '../HeaderChannelFixed.vue'
+    import { useHeaderChannelStore } from '../../stores/header-channel';
+    import { storeToRefs } from 'pinia'
 
-    const topNav = ref(null)
-    const slideDown = ref(false)
-    onMounted(() => {
-        //检查父节点即headerbanner在视口的可见度，75可见时让顶部导航切换类
-        const observer = new IntersectionObserver((e) => {
-            slideDown.value = !e[0].isIntersecting
-            // if(!e[0].isIntersecting){
-            //     topNav.value.classList.add('slide-down')
-            //     slideDown.value = true
-            // }else{
-            //     topNav.value.classList.remove('slide-down')
-            //     slideDown.value = false
-            // }
-        }, {threshold: 0.6})
-        observer.observe(topNav.value.parentNode)
+    defineProps({
+        slideDown: Boolean
     })
+    const { headerChannelVisible } = storeToRefs(useHeaderChannelStore())
+
 </script>
 
 <template>
-    <div ref="topNav" class="top-nav" :class="{'slide-down':slideDown}">
+    <div ref="topNav" class="top-nav" :class="{'slide-down': slideDown}">
         <TopLeftNav :slideDown="slideDown"></TopLeftNav>
         <TopCenterNav></TopCenterNav>
         <TopRightNav></TopRightNav>
+        <!-- 因为紧贴在topNav下方,所以放在这里 -->
+        <Transition name="fadeforward">
+        <HeaderChannelFixed v-show="!headerChannelVisible"></HeaderChannelFixed>
+    </Transition>
     </div>
 </template>
 
@@ -39,13 +34,15 @@
         color: var(--text2);
         position: absolute;
         top: 0;
-        z-index: 50;
+        z-index: 1000;
         display: flex;
         align-items: center;
         justify-content: space-between;
     }
     .top-nav.slide-down{
         position: fixed;
+        /* 用来改变子元素fixed的参照物 */
+        transform: translate(0);
         background-color: white;
         box-shadow: inset 0 -1px 0 var(--Ga2)
     }

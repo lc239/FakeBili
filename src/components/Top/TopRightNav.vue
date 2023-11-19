@@ -316,7 +316,7 @@
                 <span>创作中心</span>
             </a>
         </li>
-        <li :ref="el => useAreaIn(el, inUploadArea, 200, 100)" class="upload-area">
+        <li :ref="el => useAreaIn(el, inUploadArea, 200, 100)" class="upload-area column-shell-container">
             <button class="upload">
                 <svg width="18" height="18" viewBox="0 0 18 18" fill="none" xmlns="http://www.w3.org/2000/svg">
                     <path d="M12.0824 10H14.1412C15.0508 10 15.7882 10.7374 15.7882 11.6471V12.8824C15.7882 13.792 15.0508 14.5294 14.1412 14.5294H3.84707C2.93743 14.5294 2.20001 13.792 2.20001 12.8824V11.6471C2.20001 10.7374 2.93743 10 3.84707 10H5.90589" stroke="currentColor" stroke-width="1.7" stroke-linecap="round" stroke-linejoin="round"></path>
@@ -545,7 +545,7 @@
         margin-right: 10px;
     }
     .right-nav .avatar-area .user-shell .user-content .coin .text{
-        color: #9499A0;
+        color: var(--grey1);
         margin-right: 5px;
     }
     .right-nav .avatar-area .user-shell .user-content .counts{
@@ -573,7 +573,7 @@
     .right-nav .user-content .counts a .text{
         font-size: 12px;
         font-weight: 400;
-        color: #9499A0;
+        color: var(--grey1);
     }
     .right-nav .avatar-area .user-shell .user-content .services > *{
         display: flex;
@@ -607,7 +607,7 @@
     .right-nav .avatar-area .user-shell .user-content .services .more-service-area .more-service-shell .more-service-content{
         padding: 12px 10px;
         background-color: white;
-        border: 1px solid #E3E5E7;
+        border: 1px solid var(--Ga2);
         border-radius: 8px;
         box-shadow: 0 0 30px rgba(0,0,0,.1);
     }
@@ -630,7 +630,7 @@
     .right-nav .avatar-area .user-shell .user-content .split-line{
         width: 100%;
         margin: 10px 0;
-        border-bottom: 1px solid #E3E5E7;
+        border-bottom: 1px solid var(--Ga2);
     }
     .right-nav li .upload{
         height: 34px;
@@ -656,10 +656,6 @@
         margin-right: 5px;
     }
     .right-nav .upload-area{
-        position: relative;
-        display: flex;
-        flex-direction: column;
-        align-items: center;
         font-size: 12px;
         cursor: pointer;
     }
@@ -687,7 +683,7 @@
         transition: all .3s;
     }
     .right-nav .upload-area .upload-shell .upload-content > div:hover{
-        background-color: #E3E5E7;
+        background-color: var(--Ga2);
     }
     .right-nav .upload-area .upload-shell .upload-content > div > span{
         margin-top: 6px;
